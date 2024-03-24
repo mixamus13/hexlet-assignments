@@ -47,14 +47,15 @@ public class Application {
 
     @PutMapping("/posts/{id}")
     public Post updatePost(@PathVariable String id, @RequestBody Post post) {
-        posts.stream()
+        return posts.stream()
                 .filter(p -> p.getId().equals(id))
-                .findFirst()
-                .ifPresent(p -> {
+                .map(p -> {
                     p.setTitle(post.getTitle());
                     p.setBody(post.getBody());
-                });
-        return post;
+                    return p;
+                })
+                .findFirst()
+                .orElseThrow();
     }
 
     @DeleteMapping("/posts/{id}")
